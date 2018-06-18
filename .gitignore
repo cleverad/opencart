@@ -48,6 +48,7 @@
 
 # Vendor Files
 /upload/system/storage/vendor
+/storage
 
 # Npm Files
 /node_modules
