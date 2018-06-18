@@ -49,6 +49,9 @@
 # Vendor Files
 /upload/system/storage/vendor
 
+# Npm Files
+/node_modules
+
 # Flags 
 # remove sharp char if you want to add flags to gitignore
 # /upload/flags/*
@@ -63,3 +66,6 @@
 
 # IDE Project files
 /.idea
+
+/composer.lock
+/package-lock.json
