@@ -197,7 +197,7 @@
                             </div>
                             <h4>{{ retailcrm_missing_status }}</h4>
                             <div class="retailcrm_unit">
-                                <select id="retailcrm_missing_status" name="retailcrm_missing_status">
+                                <select id="retailcrm_missing_status" name="module_retailcrm_missing_status">
                                     <option></option>
                                     {% for k, v in statuses.retailcrm %}
                                     <option value="{{ k }}" {% if saved_settings.retailcrm_missing_status is defined and k == saved_settings.retailcrm_missing_status %} selected="selected" {% endif %}>

@@ -23,19 +23,19 @@
       <h1>{{ heading_title }}</h1>
       <div id="accordion">
         <div class="card">
-          <h4 id="heading-checkout-option" class="card-header collapsed" data-target="#collapse-checkout-option">{{ text_checkout_option }}</h4>
+          <h4 id="heading-checkout-option" class="card-header collapsed" data-toggle="collapse" data-target="#collapse-checkout-option">{{ text_checkout_option }}</h4>
           <div id="collapse-checkout-option" class="collapse" data-parent="#accordion">
             <div class="card-body"></div>
           </div>
         </div>
         <div class="card">
           {% if not logged and account != 'guest' %}
-            <h4 class="card-header collapsed" data-target="#collapse-payment-address">{{ text_checkout_account }}</h4>
+            <h4 class="card-header collapsed" data-toggle="collapse" data-target="#collapse-payment-address">{{ text_checkout_account }}</h4>
             <div id="collapse-payment-address" class="collapse" data-parent="#accordion">
               <div class="card-body"></div>
             </div>
           {% else %}
-            <h4 class="card-header collapsed" data-target="#collapse-payment-address">{{ text_checkout_account }}</h4>
+            <h4 class="card-header collapsed" data-toggle="collapse" data-target="#collapse-payment-address">{{ text_checkout_account }}</h4>
             <div id="collapse-payment-address" class="collapse show" data-parent="#accordion">
               <div class="card-body"></div>
             </div>
@@ -43,26 +43,26 @@
         </div>
         {% if shipping_required %}
           <div class="card">
-            <h4 class="card-header collapsed" data-target="#collapse-shipping-address">{{ text_checkout_shipping_address }}</h4>
+            <h4 class="card-header collapsed" data-toggle="collapse" data-target="#collapse-shipping-address">{{ text_checkout_shipping_address }}</h4>
             <div id="collapse-shipping-address" class="collapse" data-parent="#accordion">
               <div class="card-body"></div>
             </div>
           </div>
           <div class="card">
-            <h4 class="card-header collapsed" data-target="#collapse-shipping-address">{{ text_checkout_shipping_method }}</h4>
+            <h4 class="card-header collapsed" data-toggle="collapse" data-target="#collapse-shipping-address">{{ text_checkout_shipping_method }}</h4>
             <div id="collapse-shipping-method" class="collapse" data-parent="#accordion">
               <div class="card-body"></div>
             </div>
           </div>
         {% endif %}
         <div class="card">
-          <h4 class="card-header collapsed" data-target="#collapse-payment-method">{{ text_checkout_payment_method }}</h4>
+          <h4 class="card-header collapsed" data-toggle="collapse" data-target="#collapse-payment-method">{{ text_checkout_payment_method }}</h4>
           <div id="collapse-payment-method" class="collapse" data-parent="#accordion">
             <div class="card-body"></div>
           </div>
         </div>
         <div class="card">
-          <h4 class="card-header collapsed" data-target="#collapse-checkout-confirm">{{ text_checkout_confirm }}</h4>
+          <h4 class="card-header collapsed" data-toggle="collapse" data-target="#collapse-checkout-confirm">{{ text_checkout_confirm }}</h4>
           <div id="collapse-checkout-confirm" class="collapse" data-parent="#accordion">
             <div class="card-body"></div>
           </div>
@@ -138,29 +138,21 @@ $(document).delegate('#button-account', 'click', function() {
 			$('#collapse-payment-address .card-body').html(html);
 
 
-
-
-
 			if ($('input[name=\'account\']:checked').val() == 'register') {
 
 				$('#heading-payment-address').parent().find('h4').html('{{ text_checkout_account }}');
 
+//				$('#collapse-checkout-option').parent().collapse();
 
-
-				//$('#collapse-checkout-option').parent().collapse();
-
-
-
-
-				data-target
-
-
+//				data-target
 
 			} else {
 				$('#heading-payment-address').parent().find('h4').html('{{ text_checkout_payment_address }}');
 			}
 
-			$('a[href=\'#collapse-payment-address\']').trigger('click');
+			console.log('Trigger click');
+
+			$('[data-target=\'#collapse-payment-address\']').trigger('click');
 		},
 		error: function(xhr, ajaxOptions, thrownError) {
 			alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
@@ -800,7 +792,7 @@ $(document).delegate('#button-payment-method', 'click', function() {
 
 						$('#collapse-checkout-confirm').parent().find('h4').html('{{ text_checkout_confirm }}');
 
-						$('a[href=\'#collapse-checkout-confirm\']').trigger('click');
+						$('[data-target="#collapse-checkout-confirm"]').trigger('click');
 					},
 					error: function(xhr, ajaxOptions, thrownError) {
 						alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
