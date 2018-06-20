@@ -28,7 +28,7 @@ class ModelExtensionRetailcrmOrder extends Model {
         }
 
         if (!isset($order['customer']['externalId'])) {
-            $customer = $this->searchCustomer($order['phone'], $order['email'], $retailcrmApiClient);
+            $customer = $this->searchCustomer($order['phone'], $retailcrmApiClient);
 
             if ($customer) {
                 $order['customer']['id'] = $customer['id'];
@@ -81,7 +81,7 @@ class ModelExtensionRetailcrmOrder extends Model {
             }
         }
 
-        $order['number'] = $order_data['order_id'];
+//        $order['number'] = $order_data['order_id'];
         $order['externalId'] = $order_id;
         $order['firstName'] = $order_data['firstname'];
         $order['lastName'] = $order_data['lastname'];
@@ -92,9 +92,9 @@ class ModelExtensionRetailcrmOrder extends Model {
             $order['customer']['externalId'] = $order_data['customer_id'];
         }
 
-        if (!empty($order_data['email'])) {
-            $order['email'] = $order_data['email'];
-        }
+//        if (!empty($order_data['email'])) {
+//            $order['email'] = $order_data['email'];
+//        }
 
         $deliveryCost = 0;
         $couponTotal = 0;
@@ -283,13 +283,13 @@ class ModelExtensionRetailcrmOrder extends Model {
         }
     }
 
-    private function searchCustomer($phone, $email, $retailcrmApiClient) {
+    private function searchCustomer($phone, $retailcrmApiClient) {
         $customer = array();
 
         $response = $retailcrmApiClient->customersList(
             array(
                 'name' => $phone,
-                'email' => $email
+//                'email' => $email
             ),
             1,
             100

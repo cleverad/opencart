@@ -46,7 +46,8 @@ class ControllerApiCustomer extends Controller {
 				$json['error']['lastname'] = $this->language->get('error_lastname');
 			}
 
-			if ((utf8_strlen($this->request->post['email']) > 96) || (!filter_var($this->request->post['email'], FILTER_VALIDATE_EMAIL))) {
+			if ((utf8_strlen($this->request->post['email']) > 96)) {
+			    // || (!filter_var($this->request->post['email'], FILTER_VALIDATE_EMAIL))
 				$json['error']['email'] = $this->language->get('error_email');
 			}
 

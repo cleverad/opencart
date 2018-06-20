@@ -94,7 +94,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nvar _cart = __webpack_require__(/*! ./modules/cart */ \"./upload/catalog/webpack/modules/cart.js\");\n\nvar cart = new _cart.Cart();\ncart.test();\n\n//# sourceURL=webpack:///./upload/catalog/webpack/main.js?");
+eval("\n\nvar _checkout = __webpack_require__(/*! ./modules/checkout */ \"./upload/catalog/webpack/modules/checkout.js\");\n\n$(function () {\n\n  var checkout = new _checkout.Checkout('#checkout-form');\n  checkout.init();\n});\n\n//# sourceURL=webpack:///./upload/catalog/webpack/main.js?");
 
 /***/ }),
 
@@ -109,15 +109,15 @@ eval("// removed by extract-text-webpack-plugin\n\n//# sourceURL=webpack:///./up
 
 /***/ }),
 
-/***/ "./upload/catalog/webpack/modules/cart.js":
-/*!************************************************!*\
-  !*** ./upload/catalog/webpack/modules/cart.js ***!
-  \************************************************/
+/***/ "./upload/catalog/webpack/modules/checkout.js":
+/*!****************************************************!*\
+  !*** ./upload/catalog/webpack/modules/checkout.js ***!
+  \****************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n    value: true\n});\n\nvar _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();\n\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nvar Cart = exports.Cart = function () {\n    function Cart() {\n        _classCallCheck(this, Cart);\n    }\n\n    _createClass(Cart, [{\n        key: 'test',\n        value: function test() {\n            console.log('Cart::test');\n        }\n    }]);\n\n    return Cart;\n}();\n\n//# sourceURL=webpack:///./upload/catalog/webpack/modules/cart.js?");
+eval("\n\nObject.defineProperty(exports, \"__esModule\", {\n    value: true\n});\n\nvar _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (\"value\" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();\n\nfunction _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\"Cannot call a class as a function\"); } }\n\nvar Checkout = exports.Checkout = function () {\n    function Checkout(formSelector) {\n        _classCallCheck(this, Checkout);\n\n        this.$form = $(formSelector);\n    }\n\n    _createClass(Checkout, [{\n        key: 'init',\n        value: function init() {\n            var _this = this;\n\n            this.$form.on('submit', function (e) {\n                e.preventDefault();\n\n                _this.checkout(_this.$form.serialize());\n            });\n        }\n    }, {\n        key: 'checkout',\n        value: function checkout(data) {\n            var _this2 = this;\n\n            this._removeErrors();\n\n            $.ajax({\n                url: this.$form.attr('action'),\n                method: 'post',\n                data: data,\n                beforeSend: function beforeSend() {\n                    _this2.$form.find('button[type=\"submit\"]').button('loading');\n                },\n                complete: function complete() {\n                    _this2.$form.find('button[type=\"submit\"]').button('reset');\n                },\n                success: function success(response) {\n                    if (response.errors) {\n                        _this2._renderErrors(response.errors);\n                    } else if (response.payment_content) {\n                        $('#payment_content').html(response.payment_content);\n                        $('#payment_content').find('a').trigger('click');\n                    }\n                }\n            });\n        }\n    }, {\n        key: '_removeErrors',\n        value: function _removeErrors() {\n            this.$form.find('.text-danger').remove();\n        }\n    }, {\n        key: '_renderErrors',\n        value: function _renderErrors(errors) {\n            for (var attribute in errors) {\n                var error = errors[attribute],\n                    $element = $('#checkout-' + attribute.replace('_', '-'));\n\n                if ($element.parent().hasClass('input-group')) {\n                    $element.parent().after('<div class=\"text-danger\">' + error + '</div>');\n                } else {\n                    $element.after('<div class=\"text-danger\">' + error + '</div>');\n                }\n            }\n        }\n    }]);\n\n    return Checkout;\n}();\n\n//# sourceURL=webpack:///./upload/catalog/webpack/modules/checkout.js?");
 
 /***/ }),
 

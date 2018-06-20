@@ -1,3 +1,8 @@
-import {Cart} from './modules/cart';
+import {Checkout} from './modules/checkout';
 
-const cart = new Cart();
+$(function () {
+
+const checkout = new Checkout('#checkout-form');
+checkout.init();
+
+});

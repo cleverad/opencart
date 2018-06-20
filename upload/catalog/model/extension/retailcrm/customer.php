@@ -65,8 +65,8 @@ class ModelExtensionRetailcrmCustomer extends Model {
         $customerToCrm = array(
             'externalId' => $customer['customer_id'],
             'firstName' => $customer['firstname'],
-            'lastName' => $customer['lastname'],
-            'email' => $customer['email'],
+//            'lastName' => $customer['lastname'],
+//            'email' => $customer['email'],
             'phones' => array(
                 array(
                     'number' => $customer['telephone']

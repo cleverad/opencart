@@ -108,58 +108,65 @@ class ControllerCheckoutRegister extends Controller {
 			}
 		}
 
+        $customerFields = $this->getCustomerFields();
+
+		foreach ($customerFields as $key => $value) {
+            $this->request->post[$key] = $value;
+        }
+
 		if (!$json) {
 			$this->load->model('account/customer');
 
-			if ((utf8_strlen(trim($this->request->post['firstname'])) < 1) || (utf8_strlen(trim($this->request->post['firstname'])) > 32)) {
+			if ((utf8_strlen($customerFields['firstname']) < 1) || (utf8_strlen($customerFields['firstname']) > 32)) {
 				$json['error']['firstname'] = $this->language->get('error_firstname');
 			}
 
-			if ((utf8_strlen(trim($this->request->post['lastname'])) < 1) || (utf8_strlen(trim($this->request->post['lastname'])) > 32)) {
+			if ((utf8_strlen($customerFields['lastname']) < 1) || (utf8_strlen($customerFields['lastname']) > 32)) {
 				$json['error']['lastname'] = $this->language->get('error_lastname');
 			}
 
-			if ((utf8_strlen($this->request->post['email']) > 96) || !filter_var($this->request->post['email'], FILTER_VALIDATE_EMAIL)) {
+			if (utf8_strlen($customerFields['email']) > 96) {
+			    // || !filter_var($customerFields['email'], FILTER_VALIDATE_EMAIL)
 				$json['error']['email'] = $this->language->get('error_email');
 			}
 
-			if ($this->model_account_customer->getTotalCustomersByEmail($this->request->post['email'])) {
+			if ($this->model_account_customer->getTotalCustomersByEmail($customerFields['email'])) {
 				$json['error']['warning'] = $this->language->get('error_exists');
 			}
 
-			if ((utf8_strlen($this->request->post['telephone']) < 3) || (utf8_strlen($this->request->post['telephone']) > 32)) {
+			if ((utf8_strlen($customerFields['telephone']) < 3) || (utf8_strlen($customerFields['telephone']) > 32)) {
 				$json['error']['telephone'] = $this->language->get('error_telephone');
 			}
 
-			if ((utf8_strlen(trim($this->request->post['address_1'])) < 3) || (utf8_strlen(trim($this->request->post['address_1'])) > 128)) {
+			if ((utf8_strlen($customerFields['address_1']) < 1) || (utf8_strlen($customerFields['address_1']) > 128)) {
 				$json['error']['address_1'] = $this->language->get('error_address_1');
 			}
 
-			if ((utf8_strlen(trim($this->request->post['city'])) < 2) || (utf8_strlen(trim($this->request->post['city'])) > 128)) {
+			if ((utf8_strlen($customerFields['city']) < 1) || (utf8_strlen($customerFields['city']) > 128)) {
 				$json['error']['city'] = $this->language->get('error_city');
 			}
 
 			$this->load->model('localisation/country');
 
-			$country_info = $this->model_localisation_country->getCountry($this->request->post['country_id']);
+			$country_info = $this->model_localisation_country->getCountry($customerFields['country_id']);
 
-			if ($country_info && $country_info['postcode_required'] && (utf8_strlen(trim($this->request->post['postcode'])) < 2 || utf8_strlen(trim($this->request->post['postcode'])) > 10)) {
-				$json['error']['postcode'] = $this->language->get('error_postcode');
-			}
+//			if ($country_info && $country_info['postcode_required'] && (utf8_strlen($customerFields['postcode']) < 2 || utf8_strlen($customerFields['postcode']) > 10)) {
+//				$json['error']['postcode'] = $this->language->get('error_postcode');
+//			}
 
-			if ($this->request->post['country_id'] == '') {
+			if (empty($customerFields['country_id'])) {
 				$json['error']['country'] = $this->language->get('error_country');
 			}
 
-			if (!isset($this->request->post['zone_id']) || $this->request->post['zone_id'] == '' || !is_numeric($this->request->post['zone_id'])) {
-				$json['error']['zone'] = $this->language->get('error_zone');
-			}
+//			if (empty($customerFields['zone_id']) || !is_numeric($customerFields['zone_id'])) {
+//				$json['error']['zone'] = $this->language->get('error_zone');
+//			}
 
-			if ((utf8_strlen(html_entity_decode($this->request->post['password'], ENT_QUOTES, 'UTF-8')) < 4) || (utf8_strlen(html_entity_decode($this->request->post['password'], ENT_QUOTES, 'UTF-8')) > 40)) {
+			if ((utf8_strlen(html_entity_decode($customerFields['password'], ENT_QUOTES, 'UTF-8')) < 4) || (utf8_strlen(html_entity_decode($customerFields['password'], ENT_QUOTES, 'UTF-8')) > 40)) {
 				$json['error']['password'] = $this->language->get('error_password');
 			}
 
-			if ($this->request->post['confirm'] != $this->request->post['password']) {
+			if ($customerFields['confirm'] != $customerFields['password']) {
 				$json['error']['confirm'] = $this->language->get('error_confirm');
 			}
 
@@ -168,7 +175,7 @@ class ControllerCheckoutRegister extends Controller {
 
 				$information_info = $this->model_catalog_information->getInformation($this->config->get('config_account_id'));
 
-				if ($information_info && !isset($this->request->post['agree'])) {
+				if ($information_info && !$customerFields['agree']) {
 					$json['error']['warning'] = sprintf($this->language->get('error_agree'), $information_info['title']);
 				}
 			}
@@ -204,18 +211,18 @@ class ControllerCheckoutRegister extends Controller {
 		}
 
 		if (!$json) {
-			$customer_id = $this->model_account_customer->addCustomer($this->request->post);
+			$customer_id = $this->model_account_customer->addCustomer($customerFields);
 
 			// Default Payment Address
 			$this->load->model('account/address');
 				
-			$address_id = $this->model_account_address->addAddress($customer_id, $this->request->post);
+			$address_id = $this->model_account_address->addAddress($customer_id, $customerFields);
 			
 			// Set the address as default
 			$this->model_account_customer->editAddressId($customer_id, $address_id);
 			
 			// Clear any previous login attempts for unregistered accounts.
-			$this->model_account_customer->deleteLoginAttempts($this->request->post['email']);
+			$this->model_account_customer->deleteLoginAttempts($customerFields['email']);
 
 			$this->session->data['account'] = 'register';
 
@@ -224,7 +231,7 @@ class ControllerCheckoutRegister extends Controller {
 			$customer_group_info = $this->model_account_customer_group->getCustomerGroup($customer_group_id);
 
 			if ($customer_group_info && !$customer_group_info['approval']) {
-				$this->customer->login($this->request->post['email'], $this->request->post['password']);
+				$this->customer->login($customerFields['email'], $customerFields['password']);
 
 				$this->session->data['payment_address'] = $this->model_account_address->getAddress($this->customer->getAddressId());
 
@@ -245,4 +252,47 @@ class ControllerCheckoutRegister extends Controller {
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
 	}
+
+	private function getCustomerFields()
+    {
+        $password = 'atwyld9q14';
+        $telephone = $this->post('telephone');
+        $login = $this->getValidLogin($telephone);
+
+        $countryId = $this->config->get('config_country_id');
+        $zoneId = $this->config->get('config_zone_id');
+
+        return [
+            'firstname' => $this->post('firstname', '-'),
+            'lastname' => $this->post('lastname', '-'),
+            'email' => $login,
+            'telephone' => $telephone,
+            'address_1' => $this->post('address_1', '-'),
+            'address_2' => $this->post('address_2'),
+            'city' => $this->post('city', 'Not set'),
+            'country_id' => $this->post('country_id', $countryId),
+            'postcode' => $this->post('postcode', '-'),
+            'zone_id' => $this->post('zone_id', $zoneId),
+            'password' => $this->post('password', $password),
+            'confirm' => $this->post('confirm', $password),
+            'agree' => $this->post('agree', true),
+            'company' => $this->post('company')
+        ];
+    }
+
+    private function post($key, $default = null)
+    {
+        $value = null;
+
+        if (array_key_exists($key, $this->request->post)) {
+            $value = trim($this->request->post[$key]);
+        }
+
+        return empty($value) ? $default : $value;
+    }
+
+    private function getValidLogin($str)
+    {
+        return preg_replace('/\D/', '', $str);
+    }
 }
